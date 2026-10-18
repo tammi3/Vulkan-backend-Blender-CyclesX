@@ -133,6 +133,32 @@ def main():
                     print("      !!! triangle is OUTSIDE the leaf box its parent stored")
                     problems += 1
 
+    # --- inspect objects and object_node -----------------------------------
+    objects_path = d / "objects.bin"
+    if objects_path.exists():
+        objects_u = read_words(objects_path, "I")
+        objects_f = read_words(objects_path, "f")
+        n_objects = len(objects_u) // 64
+        print("\nobjects: %d KernelObject(s) (256 bytes each)" % n_objects)
+        
+        for i in range(n_objects):
+            base = i * 64
+            tfm = objects_f[base : base + 12]
+            itfm = objects_f[base + 12 : base + 24]
+            pos_off = objects_u[base + 42]
+            
+            print("  object %d:" % i)
+            print("    tfm:  [%.3f %.3f %.3f %.3f] [%.3f %.3f %.3f %.3f] [%.3f %.3f %.3f %.3f]" % tuple(tfm[0:12]))
+            print("    itfm: [%.3f %.3f %.3f %.3f] [%.3f %.3f %.3f %.3f] [%.3f %.3f %.3f %.3f]" % tuple(itfm[0:12]))
+            print("    position_offset: %d" % pos_off)
+
+    object_node_path = d / "object_node.bin"
+    if object_node_path.exists():
+        object_node = read_words(object_node_path, "I")
+        print("\nobject_node: %d entries" % len(object_node))
+        for i, addr in enumerate(object_node):
+            print("  object %d -> root node addr: %d" % (i, addr))
+
     missing = [t for t in range(n_tris) if seen[t] == 0]
     dup = [t for t in range(n_tris) if seen[t] > 1]
     print()

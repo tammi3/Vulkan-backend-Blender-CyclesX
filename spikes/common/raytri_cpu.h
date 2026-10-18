@@ -10,12 +10,14 @@
 #include <cstdint>
 
 // What one ray found. Both CPU and GPU write exactly this 8-byte layout.
-struct Hit {
-  float t;      // distance along the ray to the closest hit (kNoHitT if none)
-  uint32_t id;  // index of the triangle that was hit (kNoHitId if none)
-};
-static_assert(sizeof(Hit) == 8, "Hit must be 8 bytes (the shader assumes it)");
+   struct Hit {
+     float t;
+     uint32_t object;
+     uint32_t prim;
+   };
 
+
+static_assert(sizeof(Hit) == 12, "Hit must be 8 bytes (the shader assumes it)");
 constexpr float kRayTMin = 1e-4f;      // ignore hits closer than this (self-hit guard)
 constexpr float kNoHitT = 1e30f;       // "infinitely far"
 constexpr uint32_t kNoHitId = 0xFFFFFFFFu;
@@ -92,7 +94,7 @@ inline void primary_ray_dir(const Camera &cam, uint32_t x, uint32_t y, uint32_t 
 // `tris` holds 9 floats per triangle. Returns the closest hit.
 inline Hit trace_cpu(const float *tris, uint32_t tri_count, const float *o, const float *d)
 {
-  Hit best{kNoHitT, kNoHitId};
+  Hit best{kNoHitT, 0xFFFFFFFFu, kNoHitId}; // t, object (none), prim (none)
   for (uint32_t i = 0; i < tri_count; i++) {
     const float *v0 = tris + (size_t)i * 9;
     const float *v1 = v0 + 3;
@@ -115,7 +117,7 @@ inline Hit trace_cpu(const float *tris, uint32_t tri_count, const float *o, cons
     const float t = v_dot(e2, q) * inv;
     if (t > kRayTMin && t < best.t) { // strict '<': on a tie the lower index wins
       best.t = t;
-      best.id = i;
+      best.prim = i;
     }
   }
   return best;

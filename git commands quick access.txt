@@ -6,3 +6,5 @@ c/dev/cycles-vulkan/tools/run_bvh_dump.sh temporarily puts the .dll s files in d
 
 
 "c:/Program Files (x86)/Steam/steamapps/common/Blender/blender.exe" -b /c/dev/resources/blendfiles/yourfile.blend -P /c/dev/cycles/src/app/export_scene_xml.py -- /c/dev/yourdirectory/scenename.xml
+
+

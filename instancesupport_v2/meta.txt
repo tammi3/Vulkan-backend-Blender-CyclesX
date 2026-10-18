@@ -1,0 +1,14 @@
+# name total_bytes element_bytes element_count
+bvh_nodes 320 16 20
+bvh_leaf_nodes 112 16 7
+prim_type 64 4 16
+prim_visibility 64 4 16
+prim_index 64 4 16
+prim_object 64 4 16
+object_node 16 4 4
+object_prim_offset 16 4 4
+objects 1024 256 4
+tri_verts 96 12 8
+tri_vindex 144 12 12
+kernel_bvh 32 32 1
+kernel_cam 992 992 1

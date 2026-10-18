@@ -32,6 +32,7 @@ struct BvhDump {
   std::vector<float> tri_verts;        // 3 floats per vertex
   std::vector<uint32_t> objects;       // kObjectWords words per KernelObject
   std::vector<int32_t> kernel_bvh;     // KernelBVH as ints; [0] is the root address
+  std::vector<uint32_t> object_node;   // object index to BVH node index mapping
 
   uint32_t node_count() const { return (uint32_t)(nodes.size() / 4); }   // in float4s
   uint32_t leaf_count() const { return (uint32_t)(leaves.size() / 4); }  // in float4s
@@ -40,6 +41,7 @@ struct BvhDump {
   uint32_t vert_count() const { return (uint32_t)(tri_verts.size() / 3); }
   uint32_t object_count() const { return (uint32_t)(objects.size() / kObjectWords); }
   int32_t root() const { return kernel_bvh.empty() ? 0 : kernel_bvh[0]; }
+  uint32_t object_node_count() const { return (uint32_t)object_node.size(); } // 
   uint32_t position_offset(uint32_t obj) const { return objects[obj * kObjectWords + kPositionOffsetWord]; }
   uint32_t object_numverts(uint32_t obj) const { return objects[obj * kObjectWords + kNumVertsWord]; }
   uint32_t object_numprims(uint32_t obj) const { return objects[obj * kObjectWords + kNumPrimsWord]; }
@@ -84,6 +86,7 @@ inline bool load_bvh_dump(const std::string &dir, BvhDump &d, std::string &err)
   if (!read_bin(dir, "tri_verts", d.tri_verts, err)) return false;
   if (!read_bin(dir, "objects", d.objects, err)) return false;
   if (!read_bin(dir, "kernel_bvh", d.kernel_bvh, err)) return false;
+  if (!read_bin(dir, "object_node", d.object_node, err)) return false;
 
   // Structural checks: these catch a wrong guess about the layout before it can
   // turn into a wild read.
