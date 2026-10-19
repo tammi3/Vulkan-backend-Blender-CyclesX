@@ -1,0 +1,2 @@
+[this](https://github.com/tammi3/cycles-vulkan-debug) is where m3 lives, implementation of a skeleton for cycles so that it can actually read vulkan as a device, i'm still thinking if i should include the other devices (CUDA, HIP, etc.) on the final build or just leave Vulkan, it might make it a bit lighter on my end since i'd need to compile with less libraries but, oh well we'll see, as a lot of devices are disabled when building Cycles at the moment, which was just because initializing those alongside Vulkan would be a nightmare to debug
+
